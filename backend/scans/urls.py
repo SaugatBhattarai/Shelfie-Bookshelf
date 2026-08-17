@@ -1,0 +1,8 @@
+from django.urls import path
+from .views import IndexView, ScanView, LibraryView
+
+urlpatterns = [
+    path("", IndexView.as_view(), name="index"),
+    path("scans/", ScanView.as_view()),
+    path("library/", LibraryView.as_view()),
+]
