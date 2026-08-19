@@ -1,8 +1,7 @@
 # AI_USAGE.md
 
 I used AI at every stage** — ideation, problem understanding, coding, debugging,
-testing, documentation — deliberately, to compress the work into the time available. I'm not
-claiming I typed every character. 
+testing, documentation — deliberately, to compress the work into the time available.
 
 **Tools:** Claude Code (Opus) as the main driver; ChatGPT/Claude chat for early framing. The OpenAI
 vision-language model in `backend/scans/pipeline/vlm.py` is not a dev tool — it's a runtime component

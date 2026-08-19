@@ -47,7 +47,7 @@ don't skip any.
 ### 2.1 Get the code
 
 ```bash
-git clone <your-repo-url> shelfie
+git clone https://github.com/SaugatBhattarai/Shelfie-Bookshelf
 cd shelfie
 ```
 
