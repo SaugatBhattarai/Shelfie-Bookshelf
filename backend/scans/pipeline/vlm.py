@@ -7,9 +7,10 @@ from openai import OpenAI, APITimeoutError, RateLimitError
 logger = logging.getLogger(__name__)
 client = OpenAI()  # reads OPENAI_API_KEY from env
 
-VLM_MODEL = "gpt-4o-mini"  # swap to "gpt-4o" if title/author accuracy is poor
-# VLM_MODEL = "gpt-5.6-luna"
-
+# VLM_MODEL = "gpt-4o-mini"  # swap to "gpt-4o" if title/author accuracy is poor
+# VLM_MODEL = "gpt-4o"
+# VLM_MODEL = "gpt-5.6-luna" # (7 matches)
+VLM_MODEL = "gpt-5.6-sol" # (13 matches)
 PROMPT = (
     "This is a cropped photo of a single book spine. "
     "Read the title and author printed on it. "
@@ -33,8 +34,8 @@ def read_spine(crop_path, timeout=15, max_retries=3):
 
             response = client.chat.completions.create(
                 model=VLM_MODEL,
-                max_tokens=150, # use this for gpt-4o-mini, gpt-4o
-                # max_completion_tokens=150,
+                # max_tokens=150, # use this for gpt-4o-mini, gpt-4o
+                max_completion_tokens=150, # use this for gpt-5.6-luna/gpt-5.6-sol (7 matches)
                 timeout=timeout,
                 response_format={"type": "json_object"},
                 messages=[{
