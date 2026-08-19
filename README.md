@@ -233,7 +233,7 @@ backend/
 
 The important boundary is `scans/pipeline/`. Those modules are ordinary functions taking and
 returning plain dicts. They know nothing about HTTP. That is what makes the matcher unit-testable
-without spinning up a server or a database — see [section 12](#12-tests).
+without spinning up a server or a database 
 
 
 ## 6. Local vs hosted: what runs where and why
@@ -323,8 +323,6 @@ Returns service status and the endpoint URLs. Useful for confirming the phone ca
 `raw_read` and `match` are both returned on purpose: the app can show what the model *read* next to
 what it was *matched to*, which is the information a human needs to judge a low-confidence row.
 
-Returns `400` only when no image is supplied. Every other failure returns `200` with the detail in
-`errors[]` — see [section 11](#11-graceful-failure).
 
 ### `POST /api/library/` — confirm books
 ```json
@@ -342,12 +340,12 @@ Returns all confirmed entries, newest first.
 
 ```
 shelfie/
-├── catalog.csv                    ★ the catalog — 320 entries (section 8)
+├── catalog.csv                      the catalog — 320 entries (section 8)
 ├── catalog1.csv                     first-draft LLM catalog, NOT loaded (section 8.4)
-├── photos/                        ★ the 23 TPL shelf photos everything was tested on
+├── photos/                          the 23 TPL shelf photos everything was tested on
 ├── docs/
 │   └── spine_detection_example.jpg  YOLO output shown in section 4
-├── AI_USAGE.md                    ★ how AI was used, stage by stage
+├── AI_USAGE.md                      how AI was used, stage by stage
 ├── README.md                        this file
 │
 ├── backend/
@@ -365,22 +363,20 @@ shelfie/
 │       ├── views.py                 IndexView, ScanView, LibraryView
 │       ├── serializers.py
 │       ├── urls.py
-│       ├── tests/test_matcher.py  ★ 22 tests (section 12)
+│       ├── tests/test_matcher.py   22 tests (section 12)
 │       └── pipeline/
-│           ├── run.py             ★ the orchestrator — read this first
+│           ├── run.py               the orchestrator — read this first
 │           ├── detector.py          YOLOv8n spine detection + cropping (local)
 │           ├── vlm.py               hosted VLM spine reading + all its failure paths
-│           ├── matcher.py         ★ scoring, margin, confidence classification
+│           ├── matcher.py           scoring, margin, confidence classification
 │           ├── catalog.py           catalog.csv → list of dicts
 │           └── timing.py            the per-stage timing context manager
 │
 └── mobile/
-    ├── App.js                     ★ the entire UI: capture, results, review, library
-    ├── api.js                     ★ the three fetch calls — EDIT `BASE` HERE
+    ├── App.js                       the entire UI: capture, results, review, library
+    ├── api.js                       the three fetch calls — EDIT `BASE` HERE
     └── app.json                     Expo config + photo permission strings
 ```
-
-★ = the files worth reading first.
 
 ---
 
