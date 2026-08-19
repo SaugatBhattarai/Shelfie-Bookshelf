@@ -246,11 +246,11 @@ without spinning up a server or a database — see [section 12](#12-tests).
 
 ---
 
-## 8. The catalog: how I built it, and what I broke on purpose
+## 7. The catalog: how I built it, and what I broke on purpose
 
 `catalog.csv` — **320 entries**, well past the 100 minimum.
 
-### 8.1 Where the data came from
+### 7.1 Where the data came from
 
 **I built it from my own photographs, not from a public dataset or a model's memory.** I went to my
 local Toronto Public Library branch and photographed shelves — the 23 images in [`photos/`](photos/)
@@ -263,7 +263,7 @@ Grisham, Lee Child, M. C. Beaton, Louise Penny, Val McDermid, Simon Beaufort —
 a public library shelf and a normal person's shelf actually hold. A catalog assembled from a
 "best books of all time" list would look impressive and match nothing.
 
-### 8.2 About `catalog1.csv`
+### 7.2 About `catalog1.csv`
 
 `catalog1.csv` (126 entries) is my **first draft**: a purely LLM-generated catalog of well-known
 titles, produced before I had my own photos. It is **not loaded by the application** —
@@ -274,7 +274,7 @@ I test against. Delete it if it's noise to you.
 
 ---
 
-## 9. Tests
+## 8. Tests
 
 ```bash
 cd backend
@@ -282,7 +282,7 @@ pytest -q                          # 22 tests
 pytest scans/tests/test_matcher.py -v   # named, one line each
 ```
 
-## 10. API reference
+## 9. API reference
 
 Base URL `http://<host>:8000/api/`.
 
@@ -338,7 +338,7 @@ Returns all confirmed entries, newest first.
 
 ---
 
-## 15. Repository map
+## 10. Repository map
 
 ```
 shelfie/
