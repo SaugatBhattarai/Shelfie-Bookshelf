@@ -5,7 +5,10 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { uploadShelf, confirmBooks, fetchLibrary } from "./api";
 
-const COLOR = { high: "#1d7a4f", review: "#b8860b", unmatched: "#b00020" };
+const COLOR = {
+  high: "#1d7a4f", review: "#b8860b", unmatched: "#b00020",
+  pending_vlm: "#666",
+};
 
 export default function App() {
   const [photo, setPhoto] = useState(null);
@@ -26,7 +29,7 @@ export default function App() {
       setResult(data);
       const preselected = {};
       data.detections.forEach((d, i) => {
-        if (d.match.status === "high") preselected[i] = true;
+        if (d.match?.status === "high") preselected[i] = true;
       });
       setSelected(preselected);
     } catch (e) {
@@ -55,9 +58,9 @@ export default function App() {
     const books = result.detections
       .filter((_, i) => selected[i])
       .map((d) => ({
-        catalog_id: d.match.catalog_id,
-        title: d.match.title ?? d.raw_read.title,
-        author: d.match.author ?? d.raw_read.author,
+        catalog_id: d.match?.catalog_id ?? null,
+        title: d.match?.title ?? d.raw_read?.title ?? "Untitled spine",
+        author: d.match?.author ?? d.raw_read?.author ?? "",
       }));
 
     setBusy(true);
@@ -104,15 +107,15 @@ export default function App() {
           }}
         >
           <Text style={{ fontSize: 16 }}>
-            {d.match.title ?? d.raw_read.title ?? "Unreadable spine"}
+            {d.match?.title ?? d.raw_read?.title ?? "Unreadable spine"}
           </Text>
-          <Text style={{ fontSize: 13, color: COLOR[d.match.status] }}>
-            {d.match.author ?? "unknown author"} · {d.match.status} ·{" "}
-            {d.match.score.toFixed(2)}
+          <Text style={{ fontSize: 13, color: COLOR[d.match?.status] ?? "#666" }}>
+            {d.match?.author ?? "unknown author"} · {d.match?.status ?? "pending"} ·{" "}
+            {typeof d.match?.score === "number" ? d.match.score.toFixed(2) : "—"}
           </Text>
           {d.alternates?.length > 0 && (
             <Text style={{ fontSize: 12, color: "#666", marginTop: 4 }}>
-              also matched: {d.alternates.map((a) => a.title).join(", ")}
+              also matched: {d.alternates.map((a) => a?.title ?? "unknown").join(", ")}
             </Text>
           )}
         </Pressable>

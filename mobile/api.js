@@ -1,4 +1,4 @@
-export const BASE = "http://192.168.2.202:8000";   // your ipconfig IPv4
+export const BASE = "http://172.20.10.3:8000"; 
 
 export async function uploadShelf(asset) {
   const form = new FormData();

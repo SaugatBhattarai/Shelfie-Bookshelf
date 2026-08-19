@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
 from rest_framework import status
 from rest_framework.reverse import reverse
+from django.conf import settings
 from .models import Scan, LibraryEntry
 from .serializers import LibraryEntrySerializer
 from .pipeline.run import run_pipeline
@@ -15,6 +16,10 @@ class IndexView(APIView):
         return Response({
             "service": "shelfie-api",
             "status": "ok",
+            # Absolute paths on purpose: if two copies of this project share port
+            # 8000, this is the only way to tell which one answered.
+            "project_root": str(settings.BASE_DIR),
+            "media_root": str(settings.MEDIA_ROOT),
             "endpoints": {
                 "scan": reverse("scan", request=request),
                 "library": reverse("library", request=request),

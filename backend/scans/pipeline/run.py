@@ -1,55 +1,44 @@
 from .timing import stage
+from .detector import detect_spines
+from .vlm import read_spines
+from .matcher import match_book, load_catalog  # adjust names to your actual module
 
-STUB_DETECTIONS = [
-    {
-        "box": [12, 0, 78, 340],
-        "detection_confidence": 0.81,
-        "raw_read": {"title": "The Dispossessed", "author": "Ursula LeGuin"},
-        "match": {
-            "catalog_id": "bk_0042", "title": "The Dispossessed",
-            "author": "Ursula K. Le Guin",
-            "score": 0.91, "margin": 0.44, "status": "high",
-        },
-        "alternates": [],
-    },
-    {
-        "box": [80, 0, 141, 340],
-        "detection_confidence": 0.55,
-        "raw_read": {"title": "Dune", "author": "Frank Herbert"},
-        "match": {
-            "catalog_id": "bk_0007", "title": "Dune (1965 Chilton)",
-            "author": "Frank Herbert",
-            "score": 0.94, "margin": 0.02, "status": "review",
-        },
-        "alternates": [
-            {"catalog_id": "bk_0008", "title": "Dune (2019 Ace)", "score": 0.92},
-        ],
-    },
-    {
-        "box": [143, 0, 190, 340],
-        "detection_confidence": 0.44,
-        "raw_read": {"title": "RIVE", "author": None},
-        "match": {"catalog_id": None, "title": None, "author": None,
-                  "score": 0.31, "margin": 0.02, "status": "unmatched"},
-        "alternates": [],
-    },
-]
-
+CATALOG = load_catalog()  # load once at module level, not per-request
 
 def run_pipeline(image_path):
-    """Photo path -> (detections, errors, timings_ms).
-
-    Phase 3 fills detect, phase 4 fills vlm, phase 2 fills match.
-    """
     timings, errors = {}, []
 
     with stage(timings, "detect"):
-        pass          # boxes = detect_spines(image_path)
+        spines = detect_spines(image_path)
+
+    if not spines:
+        errors.append({"stage": "detect", "detail": "No book spines detected in image."})
+        return [], errors, timings
 
     with stage(timings, "vlm"):
-        pass          # reads = read_spines(crops)
+        reads, vlm_errors, _ = read_spines(spines)
+    errors.extend(vlm_errors)
 
     with stage(timings, "match"):
-        pass          # detections = match_all(reads)
+        detections = []
+        for r in reads:
+            title = r["raw_read"].get("title")
+            author = r["raw_read"].get("author")
 
-    return STUB_DETECTIONS, errors, timings
+            if not title:
+                # nothing to match against — goes straight to unmatched, not a matcher call
+                match_result = {"catalog_id": None, "title": None, "author": None,
+                                 "score": 0.0, "margin": 0.0, "status": "unmatched"}
+                alternates = []
+            else:
+                match_result, alternates = match_book(title, author, CATALOG)
+
+            detections.append({
+                "box": r["box"],
+                "detection_confidence": r["detection_confidence"],
+                "raw_read": r["raw_read"],
+                "match": match_result,
+                "alternates": alternates,
+            })
+
+    return detections, errors, timings

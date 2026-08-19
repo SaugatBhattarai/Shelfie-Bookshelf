@@ -24,7 +24,6 @@ urlpatterns = [
     path("api/", include("scans.urls")),
 ]
 
-
-# Uploaded shelf photos are served by Django only in development.
+# # Uploaded shelf photos are served by Django only in development.
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
