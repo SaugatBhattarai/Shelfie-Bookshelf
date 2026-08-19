@@ -184,3 +184,27 @@ def test_real_catalog_path_resolves_from_repo_root():
     path = _find_catalog_path()
     assert path.name == "catalog.csv"
     assert path.exists()
+
+# --- Case and punctuation normalisation ---
+# Found by running the pipeline on real shelf photos: spines are often printed
+# in all caps, and rapidfuzz's token_set_ratio is case-sensitive by default,
+# so "SNAP" scored 25/100 against the catalog's "Snap" and fell to unmatched.
+
+def test_all_caps_title_still_matches(catalog):
+    match, _ = match_book("DUNE", "FRANK HERBERT", catalog)
+    assert match["catalog_id"] in ("bk_dune_1965", "bk_dune_2019")
+    assert match["score"] > 0.9
+
+
+def test_all_caps_author_still_matches(catalog):
+    upper, _ = match_book("The Dispossessed", "URSULA K. LE GUIN", catalog)
+    mixed, _ = match_book("The Dispossessed", "Ursula K. Le Guin", catalog)
+    assert upper["catalog_id"] == mixed["catalog_id"] == "bk_dispossessed"
+    assert upper["score"] == mixed["score"]
+
+
+def test_punctuation_differences_do_not_break_match(catalog):
+    # A spine that drops the apostrophe should still reach the same entry.
+    match, _ = match_book("Harry Potter and the Sorcerers Stone", "J K Rowling", catalog)
+    assert match["catalog_id"] == "bk_hp1_us"
+    assert match["status"] == "high"

@@ -10,6 +10,17 @@ const COLOR = {
   pending_vlm: "#666",
 };
 
+// Plain <Button> can't be sized on Android, so the two capture actions are
+// Pressables with a real tap target instead.
+const BTN = {
+  flex: 1,
+  paddingVertical: 16,
+  borderRadius: 8,
+  backgroundColor: "#1f1f1f",
+  alignItems: "center",
+};
+const BTN_TEXT = { color: "#fff", fontSize: 16, fontWeight: "600" };
+
 export default function App() {
   const [photo, setPhoto] = useState(null);
   const [result, setResult] = useState(null);
@@ -81,12 +92,31 @@ export default function App() {
 
   return (
     <ScrollView contentContainerStyle={{ padding: 20, paddingTop: 70, gap: 14 }}>
-      <View style={{ flexDirection: "row", gap: 12 }}>
-        <Button title="Take photo" onPress={takePhoto} />
-        <Button title="Pick photo" onPress={pickPhoto} />
+      <View>
+        <Text style={{ fontSize: 34, fontWeight: "700" }}>Shelfie</Text>
+        <Text style={{ fontSize: 15, color: "#666", marginTop: 2 }}>
+          Your personal bookshelf library inventory
+        </Text>
       </View>
 
-      {photo && <Image source={{ uri: photo }} style={{ height: 180, borderRadius: 6 }} />}
+      <View style={{ flexDirection: "row", gap: 12 }}>
+        <Pressable onPress={takePhoto} style={BTN}>
+          <Text style={BTN_TEXT}>Take photo</Text>
+        </Pressable>
+        <Pressable onPress={pickPhoto} style={BTN}>
+          <Text style={BTN_TEXT}>Pick photo</Text>
+        </Pressable>
+      </View>
+
+      {/* resizeMode="contain" so the whole shelf stays visible — the default
+          "cover" crops the edges off, which is where half the books are. */}
+      {photo && (
+        <Image
+          source={{ uri: photo }}
+          resizeMode="contain"
+          style={{ height: 340, width: "100%", borderRadius: 6, backgroundColor: "#f2f2f2" }}
+        />
+      )}
       {busy && <ActivityIndicator />}
       {error && <Text style={{ color: COLOR.unmatched }}>{error}</Text>}
 

@@ -35,7 +35,7 @@ def read_spine(crop_path, timeout=15, max_retries=3):
             response = client.chat.completions.create(
                 model=VLM_MODEL,
                 # max_tokens=150, # use this for gpt-4o-mini, gpt-4o
-                max_completion_tokens=150, # use this for gpt-5.6-luna/gpt-5.6-sol (7 matches)
+                max_completion_tokens=150, # use this for gpt-5.6-luna/gpt-5.6-sol
                 timeout=timeout,
                 response_format={"type": "json_object"},
                 messages=[{
